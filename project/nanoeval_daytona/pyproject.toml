@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nanoeval_daytona"
+version = "0.1.0"
+description = "Daytona sandbox integration for nanoeval"
+readme = "README.md"
+authors = [
+    {name = "Preparedness Team"}
+]
+requires-python = ">=3.11"
+dependencies = [
+    "nanoeval",
+    "daytona_sdk",
+    "async-lru",
+    "structlog",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "black",
+    "ruff",
+]
+
+[tool.setuptools]
+packages = ["nanoeval_daytona"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
