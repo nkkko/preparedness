@@ -12,7 +12,6 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "nanoeval",
     "daytona_sdk",
     "async-lru",
     "structlog",

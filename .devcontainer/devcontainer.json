@@ -1,0 +1,43 @@
+{
+    "name": "Preparedness Development",
+    "image": "mcr.microsoft.com/devcontainers/python:3.11",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    },
+    "containerEnv": {
+        "PYTHONPATH": "${containerWorkspaceFolder}"
+    },
+    "postCreateCommand": "pip install --upgrade pip && pip install -e . && pip install -e project/nanoeval && pip install -e project/alcatraz && pip install -e project/nanoeval_daytona && pip install pytest pytest-asyncio ruff black",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "charliermarsh.ruff",
+                "ms-azuretools.vscode-docker",
+                "ms-vscode.test-adapter-converter",
+                "matangover.mypy"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "python.formatting.provider": "black",
+                "editor.formatOnSave": true,
+                "editor.codeActionsOnSave": {
+                    "source.fixAll.ruff": true,
+                    "source.organizeImports.ruff": true
+                },
+                "python.linting.lintOnSave": true,
+                "python.testing.pytestEnabled": true,
+                "python.testing.unittestEnabled": false,
+                "python.testing.nosetestsEnabled": false,
+                "[python]": {
+                    "editor.defaultFormatter": "charliermarsh.ruff",
+                    "editor.formatOnSave": true,
+                    "editor.rulers": [100]
+                }
+            }
+        }
+    },
+    "remoteUser": "vscode"
+}

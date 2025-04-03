@@ -22,7 +22,7 @@ from nanoeval.solvers.computer_tasks.code_execution_interface import (
 logger = structlog.get_logger(component=__name__)
 
 # Default timeout for code execution
-DAYTONA_TIMEOUT = int(os.getenv("DAYTONA_TIMEOUT", "120"))
+DAYTONA_TIMEOUT = int(os.getenv("DAYTONA_TIMEOUT", "180"))
 
 # Environment variable configuration
 DAYTONA_API_KEY = os.getenv("DAYTONA_API_KEY")
@@ -152,7 +152,7 @@ class DaytonaComputerInterface(JupyterComputerInterface):
 
         try:
             result = await self.sandbox_manager.execute_code(self.sandbox, code, timeout)
-            
+
             # Parse result
             output = result.get("output", "")
             if result.get("error"):
@@ -169,7 +169,7 @@ class DaytonaComputerInterface(JupyterComputerInterface):
                     in_kernel_exception=cast(Any, exception),
                     system_exception=None,
                 )
-            
+
             return JupyterExecutionResult(
                 status="success",
                 output=output,
@@ -204,7 +204,7 @@ class DaytonaComputerInterface(JupyterComputerInterface):
 @chz.chz
 class DaytonaComputerRuntime(ComputerRuntime):
     """Runtime for executing code in Daytona sandboxes."""
-    
+
     sandbox_manager: DaytonaSandboxManager = chz.field(default_factory=DaytonaSandboxManager)
 
     @asynccontextmanager
@@ -212,30 +212,30 @@ class DaytonaComputerRuntime(ComputerRuntime):
         """Create and manage a Daytona sandbox for the given configuration."""
         # Convert computer configuration to Daytona sandbox parameters
         params = self._config_to_daytona_params(config)
-        
+
         # Create the sandbox
         sandbox = await self.sandbox_manager.create_sandbox(params)
-        
+
         try:
             # Set up working directory if specified
             if config.cwd and config.cwd != "/":
                 await self.sandbox_manager.execute_shell(
                     sandbox, f"mkdir -p {config.cwd} && cd {config.cwd}"
                 )
-            
+
             # Set up environment variables
             for key, value in config.environment.items():
                 await self.sandbox_manager.execute_shell(
                     sandbox, f"export {key}=\"{value}\""
                 )
-            
+
             # Create and yield the interface
             interface = DaytonaComputerInterface(self.sandbox_manager, sandbox)
-            
+
             # Disable internet if configured
             if not config.allow_internet:
                 await interface.disable_internet()
-                
+
             yield interface
         finally:
             # Clean up the sandbox
@@ -243,7 +243,7 @@ class DaytonaComputerRuntime(ComputerRuntime):
                 await self.sandbox_manager.remove_sandbox(sandbox)
             except Exception as e:
                 logger.error("Failed to remove sandbox", error=str(e))
-    
+
     def _config_to_daytona_params(self, config: ComputerConfiguration) -> Dict[str, Any]:
         """Convert nanoeval computer configuration to Daytona sandbox parameters."""
         # Map CPU and memory requirements
@@ -252,14 +252,14 @@ class DaytonaComputerRuntime(ComputerRuntime):
             memory=max(1, config.resources.memory // 1024),  # Convert MB to GB, minimum 1GB
             disk=DAYTONA_SANDBOX_DISK,  # Default or configured disk
         )
-        
+
         params = {
             "language": LspLanguageId.PYTHON,
             "resources": resources,
             "autoStopInterval": DAYTONA_AUTO_STOP_INTERVAL,
         }
-        
+
         # Add any additional configuration needed for Daytona
         # This is a placeholder for future extensions
-        
+
         return params

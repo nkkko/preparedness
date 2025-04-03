@@ -14,6 +14,13 @@ for proj in nanoeval alcatraz nanoeval_alcatraz; do
 done
 ```
 
+Or, if you are running evals in Daytona with:
+```bash
+for proj in nanoeval nanoeval_daytona; do
+    pip install -e project/"$proj"
+done
+```
+
 ## Evals
 
 - [PaperBench](./project/paperbench/README.md)
