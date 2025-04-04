@@ -32,3 +32,4 @@ This project is being updated to support running evaluations in Daytona sandboxe
 - Sandboxes provide isolated environments for running code execution tasks
 - Implementation focuses on Python language support via `LspLanguageId.PYTHON`
 - Resource allocation configurable via `SandboxResources` (CPU, memory, disk)
+- Always check daytona-llms.txt for daytona specific docs
